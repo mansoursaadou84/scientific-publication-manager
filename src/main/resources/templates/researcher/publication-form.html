@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title" th:text="${isEdit} ? 'Modifier la publication' : 'Soumettre une publication'">Publication</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1 th:text="${isEdit} ? 'Modifier la publication' : 'Soumettre une publication'">Publication</h1>
+    </div>
+
+    <div class="form-card">
+        <form th:action="@{/researcher/publications/save}" th:object="${publication}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="form-grid">
+                <!-- Champs communs -->
+                <div class="form-group full">
+                    <label>Titre <span class="required">*</span></label>
+                    <input type="text" th:field="*{title}" placeholder="Titre complet de la publication" required/>
+                </div>
+
+                <div class="form-group">
+                    <label>Type de publication <span class="required">*</span></label>
+                    <select th:field="*{type}" id="pubType" required>
+                        <option value="">-- Choisir un type --</option>
+                        <option th:each="t : ${T(com.centre.recherche.models.PublicationType).values()}" th:value="${t}" th:text="${t}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Annee de publication <span class="required">*</span></label>
+                    <input type="number" th:field="*{publicationYear}" placeholder="2024" min="1900" max="2100" required/>
+                </div>
+
+                <div class="form-group">
+                    <label>Categorie</label>
+                    <select th:field="*{category.id}">
+                        <option value="">-- Choisir une categorie --</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Langue</label>
+                    <select th:field="*{language}">
+                        <option value="fr">Francais</option>
+                        <option value="en">Anglais</option>
+                        <option value="ar">Arabe</option>
+                        <option value="es">Espagnol</option>
+                        <option value="de">Allemand</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label>Mots-cles</label>
+                    <input type="text" name="keywordsString" th:value="${keywordsString != null ? keywordsString : ''}" placeholder="Ex: Intelligence Artificielle, Machine Learning, Sante"/>
+                    <span class="hint">Separez les mots-cles par des virgules</span>
+                </div>
+
+                <div class="form-group full">
+                    <label>Resume</label>
+                    <textarea th:field="*{resume}" placeholder="Resume de la publication..."></textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label>Fichier PDF <span class="required" th:if="${!isEdit}">*</span></label>
+                    <input type="file" name="pdfFile" accept=".pdf" th:required="${!isEdit}"/>
+                    <div th:if="${isEdit and publication.pdfFilePath != null}" class="pdf-current">
+                        Un PDF est deja joint. Uploadez un nouveau fichier pour le remplacer.
+                    </div>
+                    <span class="hint">Format PDF uniquement - taille max 20 MB</span>
+                </div>
+
+                <!-- Champs specifiques : Article scientifique -->
+                <div class="type-fields" id="fields-ARTICLE_SCIENTIFIQUE">
+                    <h4 class="type-fields-title">Champs article scientifique</h4>
+                    <div class="form-group">
+                        <label>Revue / Journal</label>
+                        <input type="text" th:field="*{journalName}" placeholder="Nom de la revue"/>
+                    </div>
+                    <div class="form-group">
+                        <label>DOI</label>
+                        <input type="text" th:field="*{doi}" placeholder="Ex: 10.1000/xyz123"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Volume</label>
+                        <input type="text" th:field="*{volume}" placeholder="Ex: 12"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Numero</label>
+                        <input type="text" th:field="*{issue}" placeholder="Ex: 3"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Pages</label>
+                        <input type="text" th:field="*{pages}" placeholder="Ex: 1-15"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Facteur d'impact</label>
+                        <input type="number" step="0.01" th:field="*{impactFactor}" placeholder="Ex: 3.5"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Identifiant unique</label>
+                        <input type="text" th:field="*{uniqueIdentifier}" placeholder="Ex: CRIS-2024-001"/>
+                    </div>
+                </div>
+
+                <!-- Champs specifiques : Communication conference -->
+                <div class="type-fields" id="fields-COMMUNICATION_CONFERENCE">
+                    <h4 class="type-fields-title">Champs communication de conference</h4>
+                    <div class="form-group">
+                        <label>Conference</label>
+                        <input type="text" th:field="*{conferenceName}" placeholder="Nom de la conference"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Lieu</label>
+                        <input type="text" th:field="*{conferenceLocation}" placeholder="Ville, Pays"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Date de la conference</label>
+                        <input type="text" th:field="*{conferenceDate}" placeholder="Ex: 15-17 mars 2024"/>
+                    </div>
+                    <div class="form-group full">
+                        <label>Actes / Proceedings</label>
+                        <input type="text" th:field="*{proceedings}" placeholder="Reference aux actes de la conference"/>
+                    </div>
+                    <div class="form-group">
+                        <label>DOI</label>
+                        <input type="text" name="doi" id="doi-conf" th:value="*{doi}" placeholder="Ex: 10.1000/xyz123"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Pages</label>
+                        <input type="text" name="pages" id="pages-conf" th:value="*{pages}" placeholder="Ex: 1-15"/>
+                    </div>
+                </div>
+
+                <!-- Champs specifiques : Rapport de recherche -->
+                <div class="type-fields" id="fields-RAPPORT_RECHERCHE">
+                    <h4 class="type-fields-title">Champs rapport de recherche</h4>
+                    <div class="form-group">
+                        <label>Numero de rapport</label>
+                        <input type="text" th:field="*{reportNumber}" placeholder="Ex: RR-2024-001"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Commanditaire</label>
+                        <input type="text" th:field="*{sponsor}" placeholder="Organisme commanditaire"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Diffusion</label>
+                        <select th:field="*{distribution}">
+                            <option value="">-- Choisir --</option>
+                            <option value="PUBLIC">Publique</option>
+                            <option value="RESTREINT">Restreint</option>
+                            <option value="INTERNE">Interne</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Identifiant unique</label>
+                        <input type="text" name="uniqueIdentifier" id="uniqueId-rapport" th:value="*{uniqueIdentifier}" placeholder="Ex: CRIS-2024-001"/>
+                    </div>
+                </div>
+
+                <!-- Champs specifiques : These / Memoire -->
+                <div class="type-fields" id="fields-THESE_MEMOIRE">
+                    <h4 class="type-fields-title">Champs these / memoire</h4>
+                    <div class="form-group">
+                        <label>Etablissement</label>
+                        <input type="text" th:field="*{institution}" placeholder="Universite ou ecole"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Discipline</label>
+                        <input type="text" th:field="*{discipline}" placeholder="Ex: Informatique"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Grade obtenu</label>
+                        <input type="text" th:field="*{degreeObtained}" placeholder="Ex: Doctorat, Master"/>
+                    </div>
+                    <div class="form-group full">
+                        <label>Jury</label>
+                        <textarea th:field="*{jury}" placeholder="Membres du jury (un par ligne)"></textarea>
+                    </div>
+                </div>
+
+                <!-- Champs specifiques : Ouvrage -->
+                <div class="type-fields" id="fields-OUVRAGE">
+                    <h4 class="type-fields-title">Champs ouvrage / chapitre</h4>
+                    <div class="form-group">
+                        <label>Editeur / Maison d'edition</label>
+                        <input type="text" th:field="*{publisher}" placeholder="Nom de l'editeur"/>
+                    </div>
+                    <div class="form-group">
+                        <label>ISBN</label>
+                        <input type="text" th:field="*{isbn}" placeholder="Ex: 978-2-1234-5678-9"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Pages</label>
+                        <input type="text" name="pages" id="pages-ouvrage" th:value="*{pages}" placeholder="Ex: 1-250"/>
+                    </div>
+                    <div class="form-group full">
+                        <label>Coordinateurs</label>
+                        <input type="text" th:field="*{coordinators}" placeholder="Noms des coordinateurs separes par des virgules"/>
+                    </div>
+                    <div class="form-group">
+                        <label>DOI</label>
+                        <input type="text" name="doi" id="doi-ouvrage" th:value="*{doi}" placeholder="Ex: 10.1000/xyz123"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn-submit" th:text="${isEdit} ? 'Enregistrer les modifications' : 'Soumettre la publication'">Soumettre</button>
+                <a href="/researcher/publications" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+
+    <script layout:fragment="page-scripts">
+    document.addEventListener('DOMContentLoaded', function() {
+        var typeSelect = document.getElementById('pubType');
+        function toggleFields() {
+            var val = typeSelect.value;
+            document.querySelectorAll('.type-fields').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            if (val) {
+                var target = document.getElementById('fields-' + val);
+                if (target) target.style.display = 'contents';
+            }
+        }
+        typeSelect.addEventListener('change', toggleFields);
+        toggleFields();
+    });
+    </script>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Mes Publications</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <!-- Flash messages -->
+    <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <div class="topbar">
+        <h1>Mes publications</h1>
+        <a href="/researcher/publications/new" class="btn-add">+ Nouvelle publication</a>
+    </div>
+
+    <div th:if="${publications == null or publications.isEmpty()}" class="empty">
+        <span class="empty-icon">+</span>
+        <p>Vous n'avez pas encore soumis de publication.</p>
+        <a href="/researcher/publications/new" class="link-primary">Soumettre ma premiere publication</a>
+    </div>
+
+    <div th:unless="${publications == null or publications.isEmpty()}" class="pub-list">
+        <div th:each="pub : ${publications}" class="pub-card">
+            <div class="pub-top">
+                <span class="pub-type" th:text="${pub.type}">Type</span>
+                <span class="pub-year" th:text="${pub.publicationYear != null and pub.publicationYear > 0 ? pub.publicationYear : 'N/A'}">2024</span>
+            </div>
+            <div class="pub-title" th:text="${pub.title}">Titre</div>
+            <div class="pub-bottom">
+                <span class="status-badge" th:classappend="'st-' + ${pub.status.name()}" th:text="${pub.status}">BROUILLON</span>
+                <div class="pub-actions">
+                    <a th:href="@{/publication/{id}(id=${pub.id})}" class="btn-sm btn-outline-sm">Voir</a>
+
+                    <a th:if="${pub.status.name() == 'BROUILLON' or pub.status.name() == 'REJETEE'}"
+                       th:href="@{/researcher/publications/{id}/edit(id=${pub.id})}" class="btn-sm btn-edit-sm">Modifier</a>
+
+                    <form th:if="${pub.status.name() == 'BROUILLON'}"
+                          th:action="@{/researcher/publications/{id}/delete(id=${pub.id})}" method="post"
+                          onsubmit="return confirm('Supprimer cette publication ?')">
+                        <button type="submit" class="btn-sm btn-danger-sm">Supprimer</button>
+                    </form>
+
+                    <form th:if="${pub.status.name() == 'BROUILLON'}"
+                          th:action="@{/researcher/publications/{id}/soumettre(id=${pub.id})}" method="post">
+                        <button type="submit" class="btn-sm btn-primary-sm">Soumettre</button>
+                    </form>
+
+                    <form th:if="${pub.status.name() == 'REJETEE'}"
+                          th:action="@{/researcher/publications/{id}/remettre-en-brouillon(id=${pub.id})}" method="post">
+                        <button type="submit" class="btn-sm btn-warn-sm">Corriger</button>
+                    </form>
+
+                    <a th:if="${pub.status.name() == 'PUBLIEE'}" th:href="@{/publication/{id}(id=${pub.id})}" class="btn-sm btn-outline-sm">Voir en ligne</a>
+                    <span th:if="${pub.status.name() == 'SOUMISE'}" class="btn-info-sm">En attente...</span>
+                    <span th:if="${pub.status.name() == 'EN_VALIDATION'}" class="btn-info-sm">Examen en cours</span>
+                    <span th:if="${pub.status.name() == 'APPROUVEE'}" class="btn-info-sm">En attente de publication</span>
+                </div>
+            </div>
+            <div th:if="${pub.status.name() == 'REJETEE' and pub.validationComment != null}" class="rejet-motif">
+                Motif : <span th:text="${pub.validationComment}"></span>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

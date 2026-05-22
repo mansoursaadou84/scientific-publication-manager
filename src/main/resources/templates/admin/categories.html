@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Categories</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1>Categories</h1>
+    </div>
+
+    <div class="layout-grid">
+        <div class="form-card">
+            <h3>Ajouter une categorie</h3>
+            <form th:action="@{/admin/categories/save}" th:object="${newCategory}" method="post">
+                <label>Nom de la categorie</label>
+                <input type="text" th:field="*{name}" placeholder="Ex: Informatique" required/>
+                <button type="submit" class="btn-submit">Ajouter</button>
+            </form>
+        </div>
+        <div class="table-card">
+            <h3>Categories existantes</h3>
+            <table>
+                <thead><tr><th>ID</th><th>Nom</th><th>Action</th></tr></thead>
+                <tbody>
+                <tr th:each="cat : ${categories}">
+                    <td th:text="${cat.id}">1</td>
+                    <td th:text="${cat.name}">Informatique</td>
+                    <td><a th:href="@{/admin/categories/delete/{id}(id=${cat.id})}" class="btn-del" onclick="return confirm('Supprimer ?')">Supprimer</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

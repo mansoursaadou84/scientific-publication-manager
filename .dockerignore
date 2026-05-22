@@ -1,0 +1,13 @@
+target/
+!target/*.jar
+uploads/
+node_modules/
+*.log
+.git/
+.idea/
+.vscode/
+*.md
+video-test.*
+screenshots/
+docker-compose.yml
+Dockerfile

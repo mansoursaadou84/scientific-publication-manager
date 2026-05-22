@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Tableau de bord</title>
+    <link rel="stylesheet" layout:fragment="page-styles" th:href="@{/css/pages/admin-dashboard.css}"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <!-- Alerte publications en attente -->
+    <div th:if="${pendingPublications > 0}" class="alert-pending">
+        <span>!</span>
+        <div>
+            <strong th:text="${pendingPublications}">0</strong> publication(s) en attente de traitement
+            <span style="margin-left:1rem;font-size:0.85rem">
+                (<span th:text="${soumises}">0</span> soumises,
+                <span th:text="${enValidation}">0</span> en validation,
+                <span th:text="${approuvees}">0</span> approuvees)
+            </span>
+            <a href="/admin/publications" style="margin-left:1rem;color:#c05621;font-weight:700">Traiter</a>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="cards">
+        <div class="card card-blue">
+            <div class="card-icon">📄</div>
+            <div class="card-num" th:text="${totalPublications}">0</div>
+            <div class="card-label">Publications</div>
+        </div>
+        <div class="card card-green">
+            <div class="card-icon">👤</div>
+            <div class="card-num" th:text="${totalUsers}">0</div>
+            <div class="card-label">Utilisateurs</div>
+        </div>
+        <div class="card card-amber">
+            <div class="card-icon">📂</div>
+            <div class="card-num" th:text="${totalCategories}">0</div>
+            <div class="card-label">Categories</div>
+        </div>
+        <div class="card card-gray">
+            <div class="card-icon">🏷️</div>
+            <div class="card-num" th:text="${totalKeywords}">0</div>
+            <div class="card-label">Mots-cles</div>
+        </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="section-card">
+        <h3>Actions rapides</h3>
+        <div class="quick-actions">
+            <a href="/admin/publications" class="action-btn"><span>📄</span> Gerer publications</a>
+            <a href="/admin/users/new" class="action-btn"><span>➕</span> Nouvel utilisateur</a>
+            <a href="/admin/categories" class="action-btn"><span>📂</span> Categories</a>
+            <a href="/admin/keywords" class="action-btn"><span>🏷️</span> Mots-cles</a>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

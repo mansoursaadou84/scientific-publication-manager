@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-public}">
+<head>
+    <title layout:fragment="title">Publications Scientifiques</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+    <script layout:fragment="page-scripts" type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Centre de Recherche",
+      "description": "Plateforme de gestion des publications scientifiques"
+    }
+    </script>
+</head>
+<body>
+<section layout:fragment="content">
+    <section class="hero">
+        <h1>Catalogue des Publications</h1>
+        <p>Recherchez et explorez les publications scientifiques du centre de recherche.</p>
+        <form action="/search" method="get" class="search-box" role="search">
+            <input type="search" name="query" placeholder="Titre, auteur, mot-cle..." aria-label="Rechercher"/>
+            <button type="submit">Rechercher</button>
+        </form>
+    </section>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-num" th:text="${totalPublished ?: 0}">0</div>
+            <div class="stat-label">Publications</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">5</div>
+            <div class="stat-label">Types</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">&#8734;</div>
+            <div class="stat-label">Acces libre</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Dernieres publications</h2>
+            <a href="/search" class="see-all">Voir tout &rarr;</a>
+        </div>
+
+        <div th:if="${publications == null or publications.isEmpty()}" class="empty">
+            <span class="empty-icon">&#128196;</span>
+            <p>Aucune publication disponible pour le moment.</p>
+        </div>
+
+        <div th:unless="${publications == null or publications.isEmpty()}" class="pub-list">
+            <a th:each="pub : ${publications}" th:href="@{/publication/{id}(id=${pub.id})}" class="pub-card">
+                <div class="pub-top">
+                    <span class="pub-type" th:text="${pub.type}">Article</span>
+                    <span class="pub-year" th:text="${pub.publicationYear}">2024</span>
+                </div>
+                <div class="pub-title" th:text="${pub.title}">Titre</div>
+                <div class="pub-authors">
+                    <span th:each="a,i : ${pub.authors}">
+                        <span th:text="${(a.firstName != null ? a.firstName : '') + ' ' + (a.lastName != null ? a.lastName : '')}">Auteur</span><span th:if="${!i.last}">, </span>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

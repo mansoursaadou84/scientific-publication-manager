@@ -1,0 +1,38 @@
+# --- Build output ---
+target/
+*.class
+*.jar
+*.war
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Environment / Secrets ---
+src/main/resources/application.properties
+.env
+
+# --- Uploaded files (user-generated) ---
+uploads/
+
+# --- Temporary / test output files ---
+*.txt
+
+# --- Log files ---
+*.log
+
+# --- Maven wrapper jar ---
+.mvn/wrapper/maven-wrapper.jar
+
+# --- Package files ---
+*.zip
+*.tar.gz

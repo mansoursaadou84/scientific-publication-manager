@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Mon Profil</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <!-- Flash messages -->
+    <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <div class="topbar">
+        <h1>Mon profil</h1>
+    </div>
+
+    <div th:if="${researcher != null}" class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img th:if="${researcher.photoUrl != null}" th:src="@{${researcher.photoUrl}}" alt="Photo"/>
+                <span th:if="${researcher.photoUrl == null and researcher.firstName != null}"
+                      th:text="${researcher.firstName.substring(0,1)}">C</span>
+                <span th:if="${researcher.photoUrl == null and researcher.firstName == null}">C</span>
+            </div>
+            <div>
+                <div class="profile-name"
+                     th:text="${researcher.firstName != null ? researcher.firstName + ' ' + (researcher.lastName != null ? researcher.lastName : '') : 'Non renseigne'}">Nom</div>
+                <div class="profile-username" th:if="${researcher.user != null}" th:text="'@' + ${researcher.user.username}">username</div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field">
+                <div class="field-label">Prenom</div>
+                <div class="field-value" th:classappend="${researcher.firstName == null ? 'empty' : ''}"
+                     th:text="${researcher.firstName != null ? researcher.firstName : 'Non renseigne'}">Prenom</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Nom</div>
+                <div class="field-value" th:classappend="${researcher.lastName == null ? 'empty' : ''}"
+                     th:text="${researcher.lastName != null ? researcher.lastName : 'Non renseigne'}">Nom</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Specialite</div>
+                <div class="field-value" th:classappend="${researcher.specialty == null ? 'empty' : ''}"
+                     th:text="${researcher.specialty != null ? researcher.specialty : 'Non renseignee'}">Specialite</div>
+            </div>
+            <div class="field">
+                <div class="field-label">Informations academiques</div>
+                <div class="field-value" th:classappend="${researcher.academicInfo == null ? 'empty' : ''}"
+                     th:text="${researcher.academicInfo != null ? researcher.academicInfo : 'Non renseignees'}">Academique</div>
+            </div>
+        </div>
+
+        <a href="/researcher/profile/edit" class="btn-edit">Modifier le profil</a>
+    </div>
+
+    <div th:unless="${researcher != null}" class="no-profile">
+        <p>Votre profil n'est pas encore cree.</p>
+        <a href="/researcher/profile/edit">Creer mon profil</a>
+    </div>
+
+</main>
+</body>
+</html>

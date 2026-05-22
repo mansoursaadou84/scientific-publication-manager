@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-public}">
+<head>
+    <title layout:fragment="title">Chercheurs</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="search-header">
+        <h1>Nos chercheurs</h1>
+        <p>Découvrez les chercheurs du Centre de Recherche et d'Innovation de Settat</p>
+    </div>
+
+    <div th:if="${researchers == null or researchers.isEmpty()}" class="empty">
+        <span class="empty-icon">+</span>
+        <p>Aucun chercheur avec des publications enregistrées pour le moment.</p>
+    </div>
+
+    <div th:unless="${researchers == null or researchers.isEmpty()}" class="researchers-grid">
+        <a th:each="r : ${researchers}" th:href="@{/researchers/{id}(id=${r.id})}" class="researcher-card">
+            <div class="researcher-avatar">
+                <img th:if="${r.photoUrl != null}" th:src="@{${r.photoUrl}}" alt="Photo"/>
+                <span th:if="${r.photoUrl == null}" th:text="${r.firstName != null ? r.firstName.substring(0,1) : 'C'}">C</span>
+            </div>
+            <div class="researcher-info">
+                <h3 th:text="${r.firstName + ' ' + (r.lastName != null ? r.lastName : '')}">Nom</h3>
+                <p th:if="${r.specialty != null}" th:text="${r.specialty}">Spécialité</p>
+                <p th:if="${r.academicInfo != null}" th:text="${r.academicInfo}">Info</p>
+            </div>
+        </a>
+    </div>
+
+</main>
+</body>
+</html>

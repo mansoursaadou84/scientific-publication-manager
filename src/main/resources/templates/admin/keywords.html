@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Mots-cles</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1>Mots-cles</h1>
+    </div>
+
+    <div class="layout-grid">
+        <div class="form-card">
+            <h3>Ajouter un mot-cle</h3>
+            <form th:action="@{/admin/keywords/save}" th:object="${newKeyword}" method="post">
+                <label>Mot-cle</label>
+                <input type="text" th:field="*{name}" placeholder="Ex: Intelligence Artificielle" required/>
+                <button type="submit" class="btn-submit">Ajouter</button>
+            </form>
+        </div>
+        <div class="table-card">
+            <h3>Mots-cles existants</h3>
+            <table>
+                <thead><tr><th>ID</th><th>Nom</th><th>Action</th></tr></thead>
+                <tbody>
+                <tr th:each="kw : ${keywords}">
+                    <td th:text="${kw.id}">1</td>
+                    <td><span class="kw-badge" th:text="${kw.name}">IA</span></td>
+                    <td><a th:href="@{/admin/keywords/delete/{id}(id=${kw.id})}" class="btn-del" onclick="return confirm('Supprimer ?')">Supprimer</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

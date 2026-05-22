@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Statistiques</title>
+    <link rel="stylesheet" layout:fragment="page-styles" th:href="@{/css/pages/researcher-statistics.css}"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/charts.js}"></script>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1>Statistiques</h1>
+        <div class="export-btns">
+            <a href="/statistics/report/pdf" class="btn-export btn-pdf">Export PDF</a>
+            <a href="/statistics/report/excel" class="btn-export btn-excel">Export Excel</a>
+            <a href="/statistics/report/pdf/admin" class="btn-export btn-admin">Rapport admin PDF</a>
+            <a href="/statistics/report/excel/admin" class="btn-export btn-admin">Rapport admin Excel</a>
+        </div>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <h2 th:text="${totalPublished}">0</h2>
+            <p>Publications publiees</p>
+        </div>
+        <div class="stat-card green">
+            <h2 th:text="${totalAll}">0</h2>
+            <p>Total (tous statuts)</p>
+        </div>
+        <div class="stat-card purple">
+            <h2 th:text="${#maps.size(publicationsByResearcher)}">0</h2>
+            <p>Chercheurs actifs</p>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h3>Par type</h3>
+            <canvas id="chartType" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Par categorie</h3>
+            <canvas id="chartCategory" height="200"></canvas>
+        </div>
+        <div class="chart-card full">
+            <h3>Par annee</h3>
+            <canvas id="chartYear" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Par statut</h3>
+            <canvas id="chartStatus" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Par chercheur</h3>
+            <canvas id="chartResearcher" height="200"></canvas>
+        </div>
+    </div>
+
+</main>
+
+<script layout:fragment="page-scripts" th:inline="javascript">
+    var chartData = {
+        byType: /*[[${allByType}]]*/ {} || {},
+        byCategory: /*[[${allByCategory}]]*/ {} || {},
+        byYear: /*[[${allByYear}]]*/ {} || {},
+        byStatus: /*[[${publicationsByStatus}]]*/ {} || {},
+        byResearcher: /*[[${allByResearcher}]]*/ {} || {}
+    };
+    if (typeof initCharts === 'function') { initCharts(chartData); }
+    else { console.error('initCharts function not found'); }
+</script>
+</body>
+</html>

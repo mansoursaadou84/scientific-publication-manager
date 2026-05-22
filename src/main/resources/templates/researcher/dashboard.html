@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Tableau de bord</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <!-- Flash messages -->
+    <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <!-- Profile card -->
+    <div class="profile-card">
+        <div class="profile-avatar">
+            <img th:if="${researcher != null and researcher.photoUrl != null}" th:src="@{${researcher.photoUrl}}" alt="Photo"/>
+            <span th:if="${researcher == null or researcher.photoUrl == null}"
+                  th:text="${researcher != null and researcher.firstName != null ? researcher.firstName.substring(0,1) : 'C'}">C</span>
+        </div>
+        <div class="profile-info">
+            <h2>
+                <span th:if="${researcher != null and researcher.firstName != null}"
+                      th:text="${researcher.firstName + ' ' + (researcher.lastName != null ? researcher.lastName : '')}">Chercheur</span>
+                <span th:unless="${researcher != null and researcher.firstName != null}"
+                      th:text="${researcher != null ? researcher.user.username : 'Chercheur'}">Chercheur</span>
+            </h2>
+            <p th:if="${researcher != null and researcher.specialty != null}" th:text="${researcher.specialty}">Specialite</p>
+        </div>
+        <a href="/researcher/profile/edit" style="margin-left:auto;padding:0.4rem 1rem;background:#f0f4f8;color:var(--color-primary);border-radius:6px;font-size:0.82rem;font-weight:600;text-decoration:none">Modifier le profil</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <h2 th:text="${totalPublications ?: 0}">0</h2>
+            <p>Publications totales</p>
+        </div>
+        <div class="stat-card green">
+            <h2 th:text="${publicationsPubliees ?: 0}">0</h2>
+            <p>Publiees</p>
+        </div>
+        <div class="stat-card amber">
+            <h2 th:text="${publicationsEnCours ?: 0}">0</h2>
+            <p>En cours de validation</p>
+        </div>
+        <div class="stat-card gray">
+            <h2 th:text="${publicationsBrouillons ?: 0}">0</h2>
+            <p>Brouillons</p>
+        </div>
+    </div>
+
+    <!-- Recent publications -->
+    <div class="section-title">
+        <h3>Mes publications recentes</h3>
+        <a href="/researcher/publications">Voir toutes</a>
+    </div>
+
+    <div th:if="${publications == null or publications.isEmpty()}" class="empty">
+        <span class="empty-icon">+</span>
+        <p>Vous n'avez pas encore de publications.</p>
+        <a href="/researcher/publications/new" class="link-primary">Soumettre votre premiere publication</a>
+    </div>
+
+    <div th:unless="${publications == null or publications.isEmpty()}" class="pub-list">
+        <div th:each="pub : ${publications}" class="pub-card">
+            <div class="pub-top">
+                <span class="pub-type" th:text="${pub.type}">Type</span>
+                <span class="pub-year" th:text="${pub.publicationYear != null and pub.publicationYear > 0 ? pub.publicationYear : 'N/A'}">2024</span>
+            </div>
+            <div class="pub-title" th:text="${pub.title}">Titre</div>
+            <div class="pub-bottom">
+                <span class="status-badge" th:classappend="'st-' + ${pub.status.name()}" th:text="${pub.status}">BROUILLON</span>
+                <div class="pub-actions">
+                    <form th:if="${pub.status.name() == 'BROUILLON'}" th:action="@{/researcher/publications/{id}/soumettre(id=${pub.id})}" method="post">
+                        <button type="submit" class="btn-sm btn-primary-sm">Soumettre</button>
+                    </form>
+                    <form th:if="${pub.status.name() == 'REJETEE'}" th:action="@{/researcher/publications/{id}/remettre-en-brouillon(id=${pub.id})}" method="post">
+                        <button type="submit" class="btn-sm btn-warn-sm">Corriger</button>
+                    </form>
+                    <a th:if="${pub.status.name() == 'PUBLIEE'}" th:href="@{/publication/{id}(id=${pub.id})}" class="btn-sm btn-outline-sm">Voir en ligne</a>
+                    <span th:if="${pub.status.name() == 'SOUMISE'}" class="btn-info-sm">En attente...</span>
+                    <span th:if="${pub.status.name() == 'EN_VALIDATION'}" class="btn-info-sm">Examen en cours</span>
+                    <span th:if="${pub.status.name() == 'APPROUVEE'}" class="btn-info-sm">En attente de publication</span>
+                </div>
+            </div>
+            <div th:if="${pub.status.name() == 'REJETEE' and pub.validationComment != null}" class="rejet-motif">
+                Motif : <span th:text="${pub.validationComment}"></span>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

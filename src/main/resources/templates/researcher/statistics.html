@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Mes Statistiques</title>
+    <link rel="stylesheet" layout:fragment="page-styles" th:href="@{/css/pages/researcher-statistics.css}"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1>Mes statistiques</h1>
+        <div class="export-btns">
+            <a href="/researcher/report/pdf" class="btn-export btn-pdf">Export PDF</a>
+            <a href="/researcher/report/excel" class="btn-export btn-excel">Export Excel</a>
+        </div>
+    </div>
+
+    <!-- Overview stats -->
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <h2 th:text="${totalPublications ?: 0}">0</h2>
+            <p>Publications totales</p>
+        </div>
+        <div class="stat-card green">
+            <h2 th:text="${publicationsPubliees ?: 0}">0</h2>
+            <p>Publiees</p>
+        </div>
+        <div class="stat-card amber">
+            <h2 th:text="${publicationsEnCours ?: 0}">0</h2>
+            <p>En cours de validation</p>
+        </div>
+        <div class="stat-card gray">
+            <h2 th:text="${publicationsBrouillons ?: 0}">0</h2>
+            <p>Brouillons</p>
+        </div>
+    </div>
+
+    <!-- Taux d'acceptation -->
+    <div class="taux-card" th:if="${totalPublications != null and totalPublications > 0}">
+        <div class="taux-circle" th:style="'--pct:' + ${tauxAcceptation} + '%'">
+            <div class="taux-inner" th:text="${#numbers.formatDecimal(tauxAcceptation, 1, 1)}">0</div>
+        </div>
+        <div class="taux-info">
+            <h3>Taux d'acceptation</h3>
+            <p>Proportion de publications publiees parmi les publications soumises (hors brouillons).</p>
+        </div>
+    </div>
+
+    <div th:if="${totalPublications == null or totalPublications == 0}" class="empty-charts">
+        Vous n'avez pas encore de publications. Les statistiques apparaitront ici.
+    </div>
+
+    <div th:if="${totalPublications != null and totalPublications > 0}" class="charts-grid">
+        <!-- Par statut -->
+        <div class="chart-card">
+            <h3>Repartition par statut</h3>
+            <div class="bar-chart">
+                <div th:each="entry : ${byStatus}" class="bar-row">
+                    <span class="bar-label" th:text="${entry.key}">Statut</span>
+                    <div class="bar-track">
+                        <div class="bar-fill" th:classappend="'color-' + ${entry.key}"
+                             th:style="'width:' + ${(entry.value * 100.0 / totalPublications) > 2 ? (entry.value * 100.0 / totalPublications) : 2} + '%'"></div>
+                    </div>
+                    <span class="bar-value" th:text="${entry.value}">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Par type -->
+        <div class="chart-card">
+            <h3>Repartition par type</h3>
+            <div class="bar-chart">
+                <div th:each="entry : ${byType}" class="bar-row">
+                    <span class="bar-label" th:text="${#strings.abbreviate(entry.key, 18)}">Type</span>
+                    <div class="bar-track">
+                        <div class="bar-fill" th:classappend="'type-' + ${#strings.substringBefore(entry.key, '_')}"
+                             th:style="'width:' + ${(entry.value * 100.0 / totalPublications) > 2 ? (entry.value * 100.0 / totalPublications) : 2} + '%'"></div>
+                    </div>
+                    <span class="bar-value" th:text="${entry.value}">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Par annee -->
+        <div class="chart-card chart-card-full" th:if="${!#maps.isEmpty(byYear)}">
+            <h3>Publications par annee</h3>
+            <div class="year-chart">
+                <div th:each="entry : ${byYear}" class="year-bar">
+                    <span class="year-bar-count" th:text="${entry.value}">0</span>
+                    <div class="year-bar-fill"
+                         th:style="'height:' + ${(entry.value * 140.0 / maxYearCount) > 4 ? (entry.value * 140.0 / maxYearCount) : 4} + 'px'"></div>
+                    <span class="year-bar-label" th:text="${entry.key}">2024</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

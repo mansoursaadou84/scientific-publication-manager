@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Gestion des utilisateurs</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1>Gestion des utilisateurs</h1>
+        <a href="/admin/users/new" class="btn-add">+ Nouvel utilisateur</a>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom d'utilisateur</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}">1</td>
+                <td th:text="${user.username}">admin</td>
+                <td>
+                    <span th:class="${'badge badge-' + user.role.name().toLowerCase()}" th:text="${user.role}">ROLE</span>
+                </td>
+                <td>
+                    <div class="actions">
+                        <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn-edit">Modifier</a>
+                        <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="btn-del" onclick="return confirm('Supprimer cet utilisateur ?')">Supprimer</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+</body>
+</html>

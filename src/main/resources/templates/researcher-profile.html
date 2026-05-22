@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-public}">
+<head>
+    <title layout:fragment="title">Profil chercheur</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="researcher-profile-page">
+        <div class="profile-header">
+            <div class="profile-avatar-lg">
+                <img th:if="${researcher.photoUrl != null}" th:src="@{${researcher.photoUrl}}" alt="Photo"/>
+                <span th:if="${researcher.photoUrl == null}"
+                      th:text="${researcher.firstName != null ? researcher.firstName.substring(0,1) : 'C'}">C</span>
+            </div>
+            <div class="profile-details">
+                <h1 th:text="${researcher.firstName + ' ' + (researcher.lastName != null ? researcher.lastName : '')}">Chercheur</h1>
+                <p th:if="${researcher.specialty != null}" class="specialty" th:text="${researcher.specialty}">Spécialité</p>
+                <p th:if="${researcher.academicInfo != null}" class="academic" th:text="${researcher.academicInfo}">Info académique</p>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <h3>Publications</h3>
+        </div>
+
+        <div th:if="${publications == null or publications.isEmpty()}" class="empty">
+            <span class="empty-icon">+</span>
+            <p>Ce chercheur n'a pas encore de publications en ligne.</p>
+        </div>
+
+        <div th:unless="${publications == null or publications.isEmpty()}" class="pub-list">
+            <div th:each="pub : ${publications}" class="pub-card">
+                <div class="pub-top">
+                    <span class="pub-type" th:text="${pub.type}">Type</span>
+                    <span class="pub-year" th:text="${pub.publicationYear != null and pub.publicationYear > 0 ? pub.publicationYear : 'N/A'}">2024</span>
+                </div>
+                <a th:href="@{/publication/{id}(id=${pub.id})}" class="pub-title" th:text="${pub.title}">Titre</a>
+                <div class="pub-bottom">
+                    <span class="status-badge st-PUBLIEE">Publiée</span>
+                    <a th:if="${pub.pdfFilePath != null}" th:href="@{/download/pdf/{id}(id=${pub.id})}" class="btn-sm btn-outline-sm">Télécharger PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <a href="/researchers" class="link-primary" style="margin-top:1.5rem;display:inline-block">&larr; Retour à la liste des chercheurs</a>
+    </div>
+
+</main>
+</body>
+</html>

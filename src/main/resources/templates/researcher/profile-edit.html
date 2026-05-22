@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Modifier mon Profil</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div class="topbar">
+        <h1>Modifier mon profil</h1>
+    </div>
+
+    <div class="form-card">
+        <form th:action="@{/researcher/profile/save}" th:object="${researcher}" method="post" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{user.id}"/>
+            <input type="hidden" th:field="*{photoUrl}"/>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Prenom</label>
+                    <input type="text" th:field="*{firstName}" placeholder="Votre prenom"/>
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" th:field="*{lastName}" placeholder="Votre nom"/>
+                </div>
+                <div class="form-group">
+                    <label>Specialite</label>
+                    <input type="text" th:field="*{specialty}" placeholder="Ex: Informatique, Biologie..."/>
+                </div>
+                <div class="form-group">
+                    <label>Photo de profil</label>
+                    <input type="file" name="photoFile" accept="image/*"/>
+                    <div th:if="${researcher.photoUrl != null}" class="current-photo">
+                        <img th:src="@{${researcher.photoUrl}}" alt="Photo actuelle"/>
+                    </div>
+                </div>
+                <div class="form-group full">
+                    <label>Informations academiques</label>
+                    <textarea th:field="*{academicInfo}" placeholder="Diplomes, etablissements, laboratoires..."></textarea>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn-submit">Enregistrer les modifications</button>
+                <a href="/researcher/profile" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+
+</main>
+</body>
+</html>

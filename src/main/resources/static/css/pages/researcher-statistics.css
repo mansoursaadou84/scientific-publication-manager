@@ -1,0 +1,74 @@
+/* ── CSS-only bar charts ── */
+.bar-chart { display: flex; flex-direction: column; gap: 0.6rem; }
+.bar-row { display: flex; align-items: center; gap: 0.8rem; }
+.bar-label { width: 130px; font-size: 0.82rem; color: #4a5568; text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 28px; background: var(--color-bg); border-radius: var(--radius-sm); overflow: hidden; position: relative; }
+.bar-fill { height: 100%; border-radius: var(--radius-sm); transition: width 0.6s ease; }
+.bar-value { font-size: 0.78rem; font-weight: 600; color: var(--color-text); width: 36px; flex-shrink: 0; text-align: left; }
+
+/* Status colors */
+.color-BROUILLON { background: var(--color-status-brouillon); }
+.color-SOUMISE { background: var(--color-status-soumise); }
+.color-EN_VALIDATION { background: var(--color-status-en_validation); }
+.color-APPROUVEE { background: var(--color-status-approuvee); }
+.color-REJETEE { background: var(--color-status-rejetee); }
+.color-PUBLIEE { background: var(--color-status-publiee); }
+
+/* Type colors */
+.type-ARTICLE { background: var(--color-type-article); }
+.type-COMMUNICATION { background: var(--color-type-communication); }
+.type-RAPPORT { background: var(--color-type-rapport); }
+.type-THESE { background: var(--color-type-these); }
+.type-OUVRAGE { background: var(--color-type-ouvrage); }
+
+/* Taux d'acceptation circle */
+.taux-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.taux-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: conic-gradient(var(--color-primary) 0%, var(--color-primary) var(--pct), var(--color-border) var(--pct));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.taux-inner {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.taux-info h3 { font-size: 1rem; font-weight: 600; color: var(--color-text-heading); margin-bottom: 0.3rem; }
+.taux-info p { color: var(--color-text-muted); font-size: 0.85rem; margin: 0; }
+
+/* Year chart */
+.year-chart { display: flex; align-items: flex-end; gap: 0.6rem; height: 160px; padding-top: 1rem; }
+.year-bar { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.year-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-primary-dark, var(--color-primary)));
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 0.6s ease;
+}
+.year-bar-count { font-size: 0.72rem; font-weight: 600; color: var(--color-primary); margin-bottom: 0.3rem; }
+.year-bar-label { font-size: 0.72rem; color: var(--color-text-muted); margin-top: 0.3rem; }
+
+.empty-charts { text-align: center; padding: 3rem; color: var(--color-text-light); font-size: 0.9rem; }

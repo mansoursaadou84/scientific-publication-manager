@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-public}">
+<head>
+    <title layout:fragment="title" th:text="${publication.title}">Publication</title>
+    <link rel="stylesheet" layout:fragment="page-styles" th:href="@{/css/pages/publication-detail.css}"/>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="container" style="max-width:800px">
+        <a href="/search" class="back-link">&larr; Retour au catalogue</a>
+
+        <div class="card">
+            <span class="pub-type" th:text="${publication.type}">Article</span>
+            <h1 class="pub-title hero" th:text="${publication.title}">Titre</h1>
+
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <label>Auteur(s)</label>
+                    <span>
+                        <span th:each="a,i : ${publication.authors}">
+                            <span th:text="${(a.firstName != null ? a.firstName : '') + ' ' + (a.lastName != null ? a.lastName : '')}">Auteur</span><span th:if="${!i.last}">, </span>
+                        </span>
+                    </span>
+                </div>
+                <div class="meta-item">
+                    <label>Annee</label>
+                    <span th:text="${publication.publicationYear}">2024</span>
+                </div>
+                <div class="meta-item">
+                    <label>Categorie</label>
+                    <span th:text="${publication.category != null ? publication.category.name : 'Non definie'}">Cat</span>
+                </div>
+                <div class="meta-item">
+                    <label>Type</label>
+                    <span th:text="${publication.type}">Type</span>
+                </div>
+                <div class="meta-item" th:if="${publication.language != null}">
+                    <label>Langue</label>
+                    <span th:text="${publication.language}">fr</span>
+                </div>
+                <div class="meta-item" th:if="${publication.journalName != null}">
+                    <label>Revue</label>
+                    <span th:text="${publication.journalName}">Revue</span>
+                </div>
+                <div class="meta-item" th:if="${publication.conferenceName != null}">
+                    <label>Conference</label>
+                    <span th:text="${publication.conferenceName}">Conference</span>
+                </div>
+                <div class="meta-item" th:if="${publication.publisher != null}">
+                    <label>Editeur</label>
+                    <span th:text="${publication.publisher}">Editeur</span>
+                </div>
+                <div class="meta-item" th:if="${publication.volume != null or publication.issue != null or publication.pages != null}">
+                    <label>Volume / Numero / Pages</label>
+                    <span>
+                        <span th:if="${publication.volume != null}" th:text="'Vol. ' + ${publication.volume}">Vol. 12</span>
+                        <span th:if="${publication.issue != null}" th:text="${publication.volume != null ? ', No ' + publication.issue : 'No ' + publication.issue}">, No 3</span>
+                        <span th:if="${publication.pages != null}" th:text="${(publication.volume != null or publication.issue != null) ? ', pp. ' + publication.pages : 'pp. ' + publication.pages}">, pp. 1-15</span>
+                    </span>
+                </div>
+
+                <!-- Type-specific: Article scientifique -->
+                <div class="meta-item" th:if="${publication.impactFactor != null}">
+                    <label>Facteur d'impact</label>
+                    <span th:text="${publication.impactFactor}">3.5</span>
+                </div>
+
+                <!-- Type-specific: Communication conference -->
+                <div class="meta-item" th:if="${publication.conferenceLocation != null}">
+                    <label>Lieu de la conference</label>
+                    <span th:text="${publication.conferenceLocation}">Lieu</span>
+                </div>
+                <div class="meta-item" th:if="${publication.conferenceDate != null}">
+                    <label>Date de la conference</label>
+                    <span th:text="${publication.conferenceDate}">Date</span>
+                </div>
+
+                <!-- Type-specific: Rapport recherche -->
+                <div class="meta-item" th:if="${publication.reportNumber != null}">
+                    <label>Numero de rapport</label>
+                    <span th:text="${publication.reportNumber}">RR-xxx</span>
+                </div>
+                <div class="meta-item" th:if="${publication.sponsor != null}">
+                    <label>Commanditaire</label>
+                    <span th:text="${publication.sponsor}">Commanditaire</span>
+                </div>
+                <div class="meta-item" th:if="${publication.distribution != null}">
+                    <label>Diffusion</label>
+                    <span th:text="${publication.distribution}">Publique</span>
+                </div>
+
+                <!-- Type-specific: These / Memoire -->
+                <div class="meta-item" th:if="${publication.institution != null}">
+                    <label>Etablissement</label>
+                    <span th:text="${publication.institution}">Universite</span>
+                </div>
+                <div class="meta-item" th:if="${publication.discipline != null}">
+                    <label>Discipline</label>
+                    <span th:text="${publication.discipline}">Discipline</span>
+                </div>
+                <div class="meta-item" th:if="${publication.degreeObtained != null}">
+                    <label>Grade obtenu</label>
+                    <span th:text="${publication.degreeObtained}">Doctorat</span>
+                </div>
+
+                <!-- Type-specific: Ouvrage -->
+                <div class="meta-item" th:if="${publication.isbn != null}">
+                    <label>ISBN</label>
+                    <span th:text="${publication.isbn}">978-...</span>
+                </div>
+                <div class="meta-item" th:if="${publication.coordinators != null}">
+                    <label>Coordinateurs</label>
+                    <span th:text="${publication.coordinators}">Coordinateurs</span>
+                </div>
+
+                <div class="meta-item" th:if="${publication.downloadCount != null and publication.downloadCount > 0}">
+                    <label>Telechargements</label>
+                    <span th:text="${publication.downloadCount}">0</span>
+                </div>
+            </div>
+
+            <div th:if="${publication.resume != null and !publication.resume.isEmpty()}">
+                <div class="section-title">Resume</div>
+                <p class="resume-text" th:text="${publication.resume}">Resume...</p>
+            </div>
+
+            <div th:if="${publication.jury != null and !publication.jury.isEmpty()}">
+                <div class="section-title">Jury</div>
+                <p class="resume-text" th:text="${publication.jury}">Jury...</p>
+            </div>
+
+            <div th:if="${publication.proceedings != null and !publication.proceedings.isEmpty()}">
+                <div class="section-title">Actes / Proceedings</div>
+                <p class="resume-text" th:text="${publication.proceedings}">Actes...</p>
+            </div>
+
+            <div th:if="${publication.keywords != null and !publication.keywords.isEmpty()}">
+                <div class="section-title">Mots-cles</div>
+                <div class="keywords">
+                    <span th:each="kw : ${publication.keywords}" class="kw" th:text="${kw.name}">Mot-cle</span>
+                </div>
+            </div>
+
+            <div th:if="${publication.doi != null}">
+                <div class="section-title">DOI</div>
+                <div class="doi">
+                    <a th:if="${publication.doi.startsWith('10.')}" th:href="${'https://doi.org/' + publication.doi}" th:text="${publication.doi}" target="_blank" rel="noopener">DOI</a>
+                    <span th:unless="${publication.doi.startsWith('10.')}" th:text="${publication.doi}">DOI</span>
+                </div>
+            </div>
+
+            <div th:if="${publication.uniqueIdentifier != null}">
+                <div class="section-title">Identifiant interne</div>
+                <div class="doi" th:text="${publication.uniqueIdentifier}">CRIS-xxx</div>
+            </div>
+
+            <div style="margin-top:1rem">
+                <a th:if="${publication.pdfFilePath != null}" th:href="@{/download/pdf/{id}(id=${publication.id})}" class="btn-download">Telecharger le PDF</a>
+                <a th:href="@{/statistics/report/pdf/publication/{id}(id=${publication.id})}" class="btn-fiche">Fiche PDF</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

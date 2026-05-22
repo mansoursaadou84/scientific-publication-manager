@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Tableau de bord documentaliste</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <div class="topbar">
+        <h1>Tableau de bord documentaliste</h1>
+    </div>
+
+    <div class="cards">
+        <div class="card card-purple">
+            <div class="card-num" th:text="${soumises != null ? soumises.size() : 0}">0</div>
+            <div class="card-label">Soumises (a traiter)</div>
+        </div>
+        <div class="card card-blue">
+            <div class="card-num" th:text="${enValidation != null ? enValidation.size() : 0}">0</div>
+            <div class="card-label">En validation</div>
+        </div>
+        <div class="card card-green">
+            <div class="card-num" th:text="${approuvees != null ? approuvees.size() : 0}">0</div>
+            <div class="card-label">Approuvees (a publier)</div>
+        </div>
+    </div>
+
+    <!-- Publications soumises -->
+    <div class="section-card">
+        <h3>Publications soumises</h3>
+        <div th:if="${soumises == null or soumises.isEmpty()}" class="empty">Aucune publication en attente.</div>
+        <div th:unless="${soumises == null or soumises.isEmpty()}" class="pub-list">
+            <div th:each="pub : ${soumises}" class="pub-card">
+                <div class="pub-top">
+                    <span class="pub-type" th:text="${pub.type}">Type</span>
+                    <span class="badge badge-SOUMISE" th:text="${pub.status}">SOUMISE</span>
+                </div>
+                <div class="pub-title" th:text="${pub.title}">Titre</div>
+                <div class="pub-meta">
+                    <span th:each="a,i : ${pub.authors}">
+                        <span th:text="${(a.firstName != null ? a.firstName : '') + ' ' + (a.lastName != null ? a.lastName : '')}"></span><span th:if="${!i.last}">, </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:1.5rem">
+        <a href="/documentaliste/publications" style="font-weight:600;text-decoration:none">Voir toutes les publications a traiter</a>
+    </div>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,94 @@
+/* ── Mobile (< 768px) ── */
+@media (max-width: 767px) {
+  /* Sidebar: off-canvas */
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  body.sidebar-open .sidebar {
+    transform: translateX(0);
+  }
+  .sidebar-close { display: block; }
+  .sidebar-toggle { display: flex; }
+  .sidebar-overlay.show { display: block; }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1.5rem 1rem;
+    padding-top: 4rem;
+  }
+
+  /* Public nav */
+  .nav {
+    padding: 0 1rem;
+  }
+  .nav-links { display: none; }
+  .nav-actions { gap: 0.5rem; }
+  .nav-brand { font-size: 0.95rem; }
+
+  /* Hero */
+  .hero { padding: 2.5rem 1.5rem; }
+  .hero h1 { font-size: 1.6rem; }
+  .hero p { font-size: 0.9rem; }
+  .search-box { flex-direction: column; border-radius: var(--radius-md); }
+  .search-box input { padding: 0.8rem 1rem; }
+  .search-box button { padding: 0.8rem; border-radius: 0; }
+
+  /* Stats */
+  .stats { flex-direction: column; }
+  .stat { border-right: none; border-bottom: 1px solid var(--color-border); max-width: none; }
+  .stat:last-child { border-bottom: none; }
+
+  /* Stats grid */
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Charts grid */
+  .charts-grid { grid-template-columns: 1fr; }
+
+  /* Form grid */
+  .form-grid { grid-template-columns: 1fr; }
+
+  /* Layout grid */
+  .layout-grid { grid-template-columns: 1fr; }
+
+  /* Cards */
+  .pub-card { padding: 1rem; }
+  .card { padding: 1.5rem; border-radius: var(--radius-md); }
+
+  /* Publication detail meta grid */
+  .meta-grid { grid-template-columns: 1fr; }
+
+  /* Tables: horizontal scroll */
+  .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Auth card */
+  .auth-card { flex-direction: column; max-width: 100%; min-height: auto; border-radius: 0; }
+  .auth-left { padding: 2rem 1.5rem; }
+  .auth-right { padding: 2rem 1.5rem; }
+
+  /* Topbar */
+  .topbar { margin-bottom: 1.5rem; }
+  .topbar h1 { font-size: 1.2rem; }
+
+  /* Profile card */
+  .profile-card { flex-direction: column; text-align: center; }
+
+  /* Year chart */
+  .year-chart { height: 120px; }
+
+  /* Taux card */
+  .taux-card { flex-direction: column; text-align: center; }
+
+  /* Filters */
+  .filters { padding: 0.8rem 1rem; }
+
+  /* Bar chart labels */
+  .bar-label { width: 80px; font-size: 0.75rem; }
+}
+
+/* ── Tablet (768px - 1024px) ── */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid { grid-template-columns: 1fr; }
+  .main-content { padding: 2rem 1.5rem; }
+  .hero h1 { font-size: 2rem; }
+}

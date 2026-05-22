@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-sidebar}">
+<head>
+    <title layout:fragment="title">Gestion des publications</title>
+    <link rel="stylesheet" layout:fragment="page-styles"/>
+</head>
+<body>
+<main layout:fragment="content">
+
+    <div th:replace="~{fragments :: flash-messages}"></div>
+
+    <div class="topbar">
+        <h1>Gestion des publications</h1>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th>Publication</th>
+                <th>Type</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pub : ${publications}">
+                <td>
+                    <div class="pub-title" th:text="${pub.title}">Titre</div>
+                    <div class="pub-meta">
+                        <span th:each="a,i : ${pub.authors}">
+                            <span th:text="${(a.firstName != null ? a.firstName : '') + ' ' + (a.lastName != null ? a.lastName : '')}">Auteur</span><span th:if="${!i.last}">, </span>
+                        </span>
+                    </div>
+                    <div th:if="${pub.status.name() == 'REJETEE' and pub.validationComment != null}" class="rejet-comment">
+                        Motif : <span th:text="${pub.validationComment}"></span>
+                    </div>
+                </td>
+                <td><span th:text="${pub.type}">Type</span></td>
+                <td>
+                    <span th:class="'badge badge-' + ${pub.status}" th:text="${pub.status}">STATUT</span>
+                </td>
+                <td>
+                    <div class="actions">
+                        <a th:href="@{/publication/{id}(id=${pub.id})}" class="btn-action btn-voir">Voir</a>
+
+                        <!-- BROUILLON → SOUMISE -->
+                        <form th:if="${pub.status.name() == 'BROUILLON'}"
+                              th:action="@{/admin/publications/{id}/soumettre(id=${pub.id})}" method="post" class="inline">
+                            <button type="submit" class="btn-action btn-soumettre">Soumettre</button>
+                        </form>
+
+                        <!-- SOUMISE → EN_VALIDATION -->
+                        <form th:if="${pub.status.name() == 'SOUMISE'}"
+                              th:action="@{/admin/publications/{id}/valider(id=${pub.id})}" method="post" class="inline">
+                            <button type="submit" class="btn-action btn-valider">Mettre en validation</button>
+                        </form>
+
+                        <!-- EN_VALIDATION → APPROUVEE -->
+                        <form th:if="${pub.status.name() == 'EN_VALIDATION'}"
+                              th:action="@{/admin/publications/{id}/approuver(id=${pub.id})}" method="post" class="inline">
+                            <button type="submit" class="btn-action btn-approuver">Approuver</button>
+                        </form>
+
+                        <!-- EN_VALIDATION → REJETEE (modal) -->
+                        <button th:if="${pub.status.name() == 'EN_VALIDATION'}"
+                                class="btn-action btn-rejeter"
+                                th:data-id="${pub.id}"
+                                th:data-action="@{/admin/publications/{id}/rejeter(id=${pub.id})}"
+                                onclick="openRejectModal(this.dataset.id, this.dataset.action)">Rejeter</button>
+
+                        <!-- APPROUVEE → PUBLIEE -->
+                        <form th:if="${pub.status.name() == 'APPROUVEE'}"
+                              th:action="@{/admin/publications/{id}/publier(id=${pub.id})}" method="post" class="inline">
+                            <button type="submit" class="btn-action btn-publier">Publier</button>
+                        </form>
+
+                        <!-- Remettre en BROUILLON -->
+                        <form th:if="${pub.status.name() != 'BROUILLON'}"
+                              th:action="@{/admin/publications/{id}/brouillon(id=${pub.id})}" method="post" class="inline"
+                              onsubmit="return confirm('Remettre cette publication en brouillon ?')">
+                            <button type="submit" class="btn-action btn-brouillon">Remettre en brouillon</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Rejection modal (from fragments) -->
+    <div th:replace="~{fragments :: reject-modal}"></div>
+
+</main>
+
+<script layout:fragment="page-scripts">
+    // openRejectModal and closeRejectModal are provided by app.js
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ── Public navigation bar ── -->
+<nav th:fragment="public-nav" class="nav" role="navigation" aria-label="Navigation principale">
+    <a href="/" class="nav-brand">Publications Scientifiques</a>
+    <ul class="nav-links" role="menubar">
+        <li role="none"><a href="/" role="menuitem">Accueil</a></li>
+        <li role="none"><a href="/search" role="menuitem">Catalogue</a></li>
+        <li role="none"><a href="/researchers" role="menuitem">Chercheurs</a></li>
+        <li role="none"><a href="/statistics/dashboard" role="menuitem">Statistiques</a></li>
+    </ul>
+    <div class="nav-actions">
+        <a sec:authorize="!isAuthenticated()" href="/login" class="btn-nav btn-outline-nav">Connexion</a>
+        <a sec:authorize="!isAuthenticated()" href="/register" class="btn-nav btn-solid-nav">S'inscrire</a>
+        <a sec:authorize="isAuthenticated()" href="/logout" class="btn-nav btn-outline-nav">Deconnexion</a>
+    </div>
+</nav>
+
+<!-- ── Footer ── -->
+<footer th:fragment="footer" class="site-footer" role="contentinfo">
+    <p>&copy; 2026 &mdash; Systeme de Gestion des Publications Scientifiques</p>
+</footer>
+
+<!-- ── Flash messages ── -->
+<div th:fragment="flash-messages">
+    <div th:if="${successMessage}" class="flash flash-success" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="flash flash-error" role="alert" th:text="${errorMessage}"></div>
+</div>
+
+<!-- ── Sidebar (parameterized by theme + activePage) ── -->
+<aside th:fragment="sidebar(theme, activePage)" class="sidebar" role="navigation" aria-label="Menu lateral">
+    <button class="sidebar-close" aria-label="Fermer le menu">&times;</button>
+
+    <div class="sidebar-brand" th:switch="${theme}">
+        <span th:case="researcher">Espace Chercheur</span>
+        <span th:case="admin">Admin Panel</span>
+        <span th:case="documentaliste">Espace Documentaliste</span>
+    </div>
+
+    <nav class="sidebar-nav" role="menubar" aria-label="Menu principal">
+        <!-- Researcher -->
+        <th:block th:if="${theme == 'researcher'}">
+            <div class="nav-section" role="separator">Mon espace</div>
+            <a href="/researcher/dashboard" role="menuitem" th:aria-current="${activePage == 'researcher-dashboard'} ? 'page' : null"
+               th:classappend="${activePage == 'researcher-dashboard'} ? 'active' : ''">Tableau de bord</a>
+            <a href="/researcher/profile" role="menuitem" th:aria-current="${activePage == 'researcher-profile'} ? 'page' : null"
+               th:classappend="${activePage == 'researcher-profile'} ? 'active' : ''">Mon profil</a>
+            <div class="nav-section" role="separator">Publications</div>
+            <a href="/researcher/publications/new" role="menuitem" th:aria-current="${activePage == 'researcher-submit'} ? 'page' : null"
+               th:classappend="${activePage == 'researcher-submit'} ? 'active' : ''">Soumettre</a>
+            <a href="/researcher/publications" role="menuitem" th:aria-current="${activePage == 'researcher-publications'} ? 'page' : null"
+               th:classappend="${activePage == 'researcher-publications'} ? 'active' : ''">Mes publications</a>
+            <div class="nav-section" role="separator">Analyse</div>
+            <a href="/researcher/statistics" role="menuitem" th:aria-current="${activePage == 'researcher-statistics'} ? 'page' : null"
+               th:classappend="${activePage == 'researcher-statistics'} ? 'active' : ''">Mes statistiques</a>
+            <div class="nav-section" role="separator">Consultation</div>
+            <a href="/search" role="menuitem">Catalogue</a>
+            <a href="/" role="menuitem">Accueil</a>
+        </th:block>
+
+        <!-- Admin -->
+        <th:block th:if="${theme == 'admin'}">
+            <div class="nav-section" role="separator">Principal</div>
+            <a href="/admin/dashboard" role="menuitem" th:aria-current="${activePage == 'admin-dashboard'} ? 'page' : null"
+               th:classappend="${activePage == 'admin-dashboard'} ? 'active' : ''">Tableau de bord</a>
+            <div class="nav-section" role="separator">Gestion</div>
+            <a href="/admin/publications" role="menuitem" th:aria-current="${activePage == 'admin-publications'} ? 'page' : null"
+               th:classappend="${activePage == 'admin-publications'} ? 'active' : ''">Publications</a>
+            <a href="/admin/users" role="menuitem" th:aria-current="${activePage == 'admin-users'} ? 'page' : null"
+               th:classappend="${activePage == 'admin-users'} ? 'active' : ''">Utilisateurs</a>
+            <a href="/admin/categories" role="menuitem" th:aria-current="${activePage == 'admin-categories'} ? 'page' : null"
+               th:classappend="${activePage == 'admin-categories'} ? 'active' : ''">Categories</a>
+            <a href="/admin/keywords" role="menuitem" th:aria-current="${activePage == 'admin-keywords'} ? 'page' : null"
+               th:classappend="${activePage == 'admin-keywords'} ? 'active' : ''">Mots-cles</a>
+            <div class="nav-section" role="separator">Rapports</div>
+            <a href="/statistics/dashboard" role="menuitem" th:aria-current="${activePage == 'admin-statistics'} ? 'page' : null"
+               th:classappend="${activePage == 'admin-statistics'} ? 'active' : ''">Statistiques</a>
+            <div class="nav-section" role="separator">Portail</div>
+            <a href="/" role="menuitem">Voir le site</a>
+        </th:block>
+
+        <!-- Documentaliste -->
+        <th:block th:if="${theme == 'documentaliste'}">
+            <div class="nav-section" role="separator">Mon espace</div>
+            <a href="/documentaliste/dashboard" role="menuitem" th:aria-current="${activePage == 'doc-dashboard'} ? 'page' : null"
+               th:classappend="${activePage == 'doc-dashboard'} ? 'active' : ''">Tableau de bord</a>
+            <a href="/documentaliste/publications" role="menuitem" th:aria-current="${activePage == 'doc-publications'} ? 'page' : null"
+               th:classappend="${activePage == 'doc-publications'} ? 'active' : ''">Publications a traiter</a>
+            <div class="nav-section" role="separator">Consultation</div>
+            <a href="/search" role="menuitem">Catalogue</a>
+            <a href="/" role="menuitem">Accueil</a>
+        </th:block>
+    </nav>
+
+    <div class="sidebar-footer"><a href="/logout" role="menuitem">Deconnexion</a></div>
+</aside>
+
+<!-- ── Reject modal ── -->
+<div th:fragment="reject-modal" id="rejectModal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="rejectModalTitle">
+    <div class="modal">
+        <h2 id="rejectModalTitle">Rejeter la publication</h2>
+        <p>Cette action notifiera l'auteur par email. Indiquez le motif du rejet.</p>
+        <form id="rejectForm" method="post">
+            <textarea name="comment" placeholder="Motif du rejet..." required></textarea>
+            <div class="modal-btns">
+                <button type="button" class="btn-modal-cancel" onclick="closeRejectModal()">Annuler</button>
+                <button type="submit" class="btn-modal-reject">Confirmer le rejet</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</html>
