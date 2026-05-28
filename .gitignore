@@ -36,3 +36,9 @@ uploads/
 # --- Package files ---
 *.zip
 *.tar.gz
+# --- Generated scripts and docs ---
+generate_*.py
+take_screenshots.py
+captures/
+Documentation_Technique_SPM.*
+Rapport_Tests_SPM.*
