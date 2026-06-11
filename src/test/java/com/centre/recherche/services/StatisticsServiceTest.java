@@ -46,7 +46,7 @@ class StatisticsServiceTest {
 
     @Test
     void countByStatus_shouldReturnCorrectCount() {
-        when(publicationRepository.countByStatus(PublicationStatus.PUBLIEE)).thenReturn(2L);
+        when(publicationRepository.findAll()).thenReturn(List.of(pub1, pub2));
 
         long count = statisticsService.countByStatus(PublicationStatus.PUBLIEE);
 
@@ -55,7 +55,8 @@ class StatisticsServiceTest {
 
     @Test
     void getTotalPublished_shouldReturnCount() {
-        when(publicationRepository.countByStatus(PublicationStatus.PUBLIEE)).thenReturn(5L);
+        when(publicationRepository.findByStatus(PublicationStatus.PUBLIEE))
+                .thenReturn(List.of(pub1, pub2, pub1, pub2, pub1));
 
         long total = statisticsService.getTotalPublished();
 
@@ -64,16 +65,17 @@ class StatisticsServiceTest {
 
     @Test
     void getPublicationsCountByStatus_shouldReturnMap() {
-        for (PublicationStatus s : PublicationStatus.values()) {
-            when(publicationRepository.countByStatus(s)).thenReturn(0L);
-        }
-        when(publicationRepository.countByStatus(PublicationStatus.PUBLIEE)).thenReturn(3L);
-        when(publicationRepository.countByStatus(PublicationStatus.BROUILLON)).thenReturn(1L);
+        Publication pub3 = new Publication();
+        pub3.setId(3L);
+        pub3.setTitle("Pub 3");
+        pub3.setStatus(PublicationStatus.BROUILLON);
+
+        when(publicationRepository.findAll()).thenReturn(List.of(pub1, pub2, pub3));
 
         Map<String, Long> result = statisticsService.getPublicationsCountByStatus();
 
         assertNotNull(result);
-        assertEquals(3L, result.get("PUBLIEE"));
+        assertEquals(2L, result.get("PUBLIEE"));
         assertEquals(1L, result.get("BROUILLON"));
     }
 }

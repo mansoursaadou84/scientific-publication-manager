@@ -3,6 +3,7 @@ package com.centre.recherche.services;
 import com.centre.recherche.models.Publication;
 import com.centre.recherche.models.PublicationStatus;
 import com.centre.recherche.repositories.PublicationRepository;
+import com.centre.recherche.services.search.TFIDFService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,8 @@ import static org.mockito.Mockito.*;
 class WorkflowServiceTest {
 
     @Mock private PublicationRepository publicationRepository;
+    @Mock private EmailService emailService;
+    @Mock private TFIDFService tfidfService;
 
     @InjectMocks
     private WorkflowService workflowService;
@@ -98,6 +101,8 @@ class WorkflowServiceTest {
 
         assertEquals(PublicationStatus.SOUMISE, result.getStatus());
         verify(publicationRepository).save(any(Publication.class));
+        verify(emailService).sendWorkflowNotification(any(Publication.class), eq(PublicationStatus.SOUMISE), isNull());
+        verify(emailService).sendAdminNotification(any(Publication.class), eq("SOUMISE"));
     }
 
     @Test
@@ -110,6 +115,7 @@ class WorkflowServiceTest {
 
         assertEquals(PublicationStatus.REJETEE, result.getStatus());
         assertEquals("Non conforme", result.getValidationComment());
+        verify(emailService).sendWorkflowNotification(any(Publication.class), eq(PublicationStatus.REJETEE), eq("Non conforme"));
     }
 
     @Test
@@ -121,5 +127,7 @@ class WorkflowServiceTest {
         Publication result = workflowService.publish(1L);
 
         assertEquals(PublicationStatus.PUBLIEE, result.getStatus());
+        verify(tfidfService).rebuildIndex();
+        verify(emailService).sendWorkflowNotification(any(Publication.class), eq(PublicationStatus.PUBLIEE), isNull());
     }
 }

@@ -115,12 +115,12 @@ class PublicationServiceTest {
     @Test
     void deletePublication_shouldCallRepository() {
         doNothing().when(publicationRepository).deleteById(1L);
-        when(tfidfService.isIndexReady()).thenReturn(true);
         doNothing().when(tfidfService).rebuildIndex();
 
         publicationService.deletePublication(1L);
 
         verify(publicationRepository).deleteById(1L);
+        verify(tfidfService).rebuildIndex();
     }
 
     @Test
