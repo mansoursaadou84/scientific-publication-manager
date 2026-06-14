@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Contrôleur d'inscription (préfixe : /register).
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class RegistrationController {
 
     @Autowired
-    private UserRepository userRepository;  // ← direct, sans passer par UserService
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -31,13 +32,25 @@ public class RegistrationController {
         return "register";
     }
 
-    /** Enregistre un nouvel utilisateur avec le rôle Chercheur. */
+    /**
+     * Enregistre un nouvel utilisateur avec le rôle Chercheur.
+     * Utilise des @RequestParam au lieu de @ModelAttribute pour éviter
+     * le binding de champs sensibles (id, role) depuis le formulaire.
+     */
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user) {
-        // Encode UNE SEULE FOIS ici
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public String registerUser(@RequestParam String username,
+                               @RequestParam String password,
+                               @RequestParam(value = "email", required = false) String email) {
+        if (userRepository.findByUsername(username) != null) {
+            return "redirect:/register?error=exists";
+        }
+
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
         user.setRole(Role.CHERCHEUR);
-        userRepository.save(user);  // ← sauvegarde directe sans re-encoder
+        user.setEmail(email);
+        userRepository.save(user);
         return "redirect:/login";
     }
 }
