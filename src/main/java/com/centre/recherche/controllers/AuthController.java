@@ -63,10 +63,16 @@ public class AuthController {
             response.put("email", user.getEmail() != null ? user.getEmail() : "");
 
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            // Erreur d'authentification (mauvais identifiants)
             Map<String, String> error = new HashMap<>();
             error.put("error", "Identifiants invalides");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        } catch (Exception e) {
+            // Autre erreur (JWT, base de données, etc.) - ne pas masquer la cause
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Erreur serveur: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 
