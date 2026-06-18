@@ -55,10 +55,13 @@ public class StatisticsService {
         return filterPublished().stream()
                 .filter(p -> p.getAuthors() != null)
                 .flatMap(p -> p.getAuthors().stream())
-                .filter(r -> r.getFirstName() != null || r.getLastName() != null)
+                .filter(r -> r.getFirstName() != null || r.getLastName() != null || r.getUser() != null)
                 .collect(Collectors.groupingBy(
-                        r -> (r.getFirstName() != null ? r.getFirstName() : "") + " " +
-                             (r.getLastName() != null ? r.getLastName() : ""),
+                        r -> {
+                            String name = ((r.getFirstName() != null ? r.getFirstName() : "") + " " +
+                                    (r.getLastName() != null ? r.getLastName() : "")).trim();
+                            return name.isEmpty() && r.getUser() != null ? r.getUser().getUsername() : name;
+                        },
                         Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
@@ -124,10 +127,13 @@ public class StatisticsService {
         return filterAll().stream()
                 .filter(p -> p.getAuthors() != null)
                 .flatMap(p -> p.getAuthors().stream())
-                .filter(r -> r.getFirstName() != null || r.getLastName() != null)
+                .filter(r -> r.getFirstName() != null || r.getLastName() != null || r.getUser() != null)
                 .collect(Collectors.groupingBy(
-                        r -> (r.getFirstName() != null ? r.getFirstName() : "") + " " +
-                             (r.getLastName() != null ? r.getLastName() : ""),
+                        r -> {
+                            String name = ((r.getFirstName() != null ? r.getFirstName() : "") + " " +
+                                    (r.getLastName() != null ? r.getLastName() : "")).trim();
+                            return name.isEmpty() && r.getUser() != null ? r.getUser().getUsername() : name;
+                        },
                         Collectors.counting()))
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())

@@ -24,7 +24,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,6 +84,17 @@ public class ResearcherController {
     private ExcelGeneratorService excelGeneratorService;
 
     private static final String UPLOAD_DIR = "./uploads";
+
+    // Fix 15: restreindre les champs autorises pour eviter le mass assignment
+    @InitBinder("publication")
+    public void initBinder(WebDataBinder binder) {
+        binder.setAllowedFields("title", "resume", "publicationYear", "type", "category.id",
+                "language", "doi", "journalName", "conferenceName", "publisher",
+                "volume", "issue", "pages", "impactFactor", "conferenceLocation",
+                "conferenceDate", "proceedings", "reportNumber", "sponsor",
+                "distribution", "jury", "institution", "discipline", "degreeObtained",
+                "isbn", "coordinators");
+    }
 
     /** Redirige vers le tableau de bord chercheur. */
     @GetMapping

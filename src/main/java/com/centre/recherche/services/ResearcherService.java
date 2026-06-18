@@ -43,4 +43,9 @@ public class ResearcherService {
     public List<Researcher> findAllWithPublished() {
         return researcherRepository.findWithPublishedPublications();
     }
+
+    /** Retourne la liste de tous les chercheurs. */
+    public List<Researcher> findAll() {
+        return researcherRepository.findAll();
+    }
 }

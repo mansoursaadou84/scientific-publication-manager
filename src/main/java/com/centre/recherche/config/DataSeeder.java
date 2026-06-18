@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Initialise les utilisateurs par defaut au demarrage de l'application.
- * Cree les comptes de test ou reinitialise leur mot de passe si necessaire.
+ * Cree les comptes s'ils n'existent pas, sans ecraser les mots de passe existants.
  */
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -34,6 +34,7 @@ public class DataSeeder implements CommandLineRunner {
         ensureUser("documentaliste", "1234", Role.DOCUMENTALISTE, "doc@centre-recherche.ma");
     }
 
+    // Fix 5: ne pas reinitialiser les mots de passe des utilisateurs existants
     private void ensureUser(String username, String rawPassword, Role role, String email) {
         User existing = userRepository.findByUsername(username);
         if (existing == null) {
@@ -45,11 +46,7 @@ public class DataSeeder implements CommandLineRunner {
             userRepository.save(user);
             log.info("Utilisateur cree : {} (role={})", username, role);
         } else {
-            existing.setPassword(passwordEncoder.encode(rawPassword));
-            existing.setRole(role);
-            existing.setEmail(email);
-            userRepository.save(existing);
-            log.info("Utilisateur reinitialise : {} (role={})", username, role);
+            log.info("Utilisateur existant : {} (role={})", username, existing.getRole());
         }
     }
 }

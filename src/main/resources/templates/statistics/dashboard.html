@@ -32,8 +32,12 @@
             <p>Total (tous statuts)</p>
         </div>
         <div class="stat-card purple">
-            <h2 th:text="${#maps.size(publicationsByResearcher)}">0</h2>
-            <p>Chercheurs actifs</p>
+            <h2 th:text="${totalResearchers}">0</h2>
+            <p>Chercheurs</p>
+        </div>
+        <div class="stat-card orange">
+            <h2 th:text="${totalCategories}">0</h2>
+            <p>Categories</p>
         </div>
     </div>
 
@@ -50,6 +54,10 @@
         <div class="chart-card full">
             <h3>Par annee</h3>
             <canvas id="chartYear" height="100"></canvas>
+        </div>
+        <div class="chart-card full">
+            <h3>Courbe de tendance</h3>
+            <canvas id="chartTrend" height="100"></canvas>
         </div>
         <div class="chart-card">
             <h3>Par statut</h3>

@@ -1,7 +1,9 @@
 package com.centre.recherche.controllers;
 
 import com.centre.recherche.models.Publication;
+import com.centre.recherche.services.CategoryService;
 import com.centre.recherche.services.PublicationService;
+import com.centre.recherche.services.ResearcherService;
 import com.centre.recherche.services.StatisticsService;
 import com.centre.recherche.services.export.ExcelGeneratorService;
 import com.centre.recherche.services.export.PdfGeneratorService;
@@ -35,6 +37,12 @@ public class StatisticsController {
     private PublicationService publicationService;
 
     @Autowired
+    private ResearcherService researcherService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
     private PdfGeneratorService pdfGeneratorService;
 
     @Autowired
@@ -56,6 +64,8 @@ public class StatisticsController {
         model.addAttribute("publicationsByStatus", statisticsService.getPublicationsCountByStatus());
         model.addAttribute("totalPublished", statisticsService.getTotalPublished());
         model.addAttribute("totalAll", statisticsService.getTotalAll());
+        model.addAttribute("totalResearchers", researcherService.findAll().size());
+        model.addAttribute("totalCategories", categoryService.findAll().size());
 
         // All publications statistics (for admin view showing data regardless of status)
         model.addAttribute("allByYear", statisticsService.getAllCountByYear());

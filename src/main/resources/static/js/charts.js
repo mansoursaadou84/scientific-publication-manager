@@ -23,6 +23,12 @@ function initCharts(data) {
     OUVRAGE: '#2e7d32'
   };
 
+  var categoryColors = [
+    '#1976d2', '#2e7d32', '#f57c00', '#7b1fa2', '#d32f2f',
+    '#78909c', '#00897b', '#5c6bc0', '#e65100', '#00838f',
+    '#6a1b9a', '#455a64'
+  ];
+
   // Publications by type (doughnut)
   if (data.byType && document.getElementById('chartType')) {
     new Chart(document.getElementById('chartType'), {
@@ -46,7 +52,7 @@ function initCharts(data) {
         labels: Object.keys(data.byCategory),
         datasets: [{
           data: Object.values(data.byCategory),
-          backgroundColor: ['#1976d2', '#2e7d32', '#f57c00', '#7b1fa2', '#d32f2f', '#78909c', '#00897b', '#5c6bc0']
+          backgroundColor: categoryColors
         }]
       },
       options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
@@ -66,6 +72,33 @@ function initCharts(data) {
         }]
       },
       options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+  }
+
+  // Trend line (courbe de tendance)
+  if (data.byYear && document.getElementById('chartTrend')) {
+    var years = Object.keys(data.byYear).sort();
+    var values = years.map(function (y) { return data.byYear[y]; });
+    new Chart(document.getElementById('chartTrend'), {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Publications',
+          data: values,
+          borderColor: '#1e3a5f',
+          backgroundColor: 'rgba(30,58,95,0.1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 5,
+          pointBackgroundColor: '#1e3a5f'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { position: 'bottom' } }
+      }
     });
   }
 
